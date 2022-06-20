@@ -1,4 +1,4 @@
-package tests;
+package classWork;
 
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
