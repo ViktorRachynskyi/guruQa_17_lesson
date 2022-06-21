@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.empty;
 import static spec.Spec.*;
 
 import java.util.HashMap;
