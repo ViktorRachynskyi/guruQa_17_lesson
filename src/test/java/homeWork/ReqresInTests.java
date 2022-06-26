@@ -2,13 +2,13 @@ package homeWork;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import models.Credentials;
+import models.LoginResponse;
 import org.junit.jupiter.api.Test;
 
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static listeners.CustomAllureListener.withCustomTemplates;
+import static org.assertj.core.api.Assertions.assertThat;
 import static spec.Spec.*;
 
 import java.util.HashMap;
@@ -22,19 +22,26 @@ public class ReqresInTests {
 
     @Test
     void loginTest() {
+        Credentials data = Credentials.builder()
+                .password("cityslicka")
+                .email("eve.holt@reqres.in")
+                .build();
 
-        String authorizeData = "{\"email\": \"eve.holt@reqres.in\", \"password\": \"cityslicka\"}";
-        String contentType = "application/json";
+        LoginResponse loginResponse =
+                given()
+                        .filter(withCustomTemplates())
+                        .spec(request)
+                        .body(data)
+                        .when()
+                        .post("/login")
+                        .then()
+                        .spec(responseSpec200)
+//                .body("token", is("QpwL5tke4Pnpja7X4"));
+                        .body(matchesJsonSchemaInClasspath("schemas/LoginResponse.json"))
+                        .extract().as(LoginResponse.class);
 
-        given()
-                .filter(withCustomTemplates())
-                .spec(request)
-                .body(authorizeData)
-                .contentType(contentType)
-                .post("/login")
-                .then()
-                .spec(responseSpec200)
-                .body("token", is("QpwL5tke4Pnpja7X4"));
+        assertThat(loginResponse.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+
     }
 
     @Test
@@ -49,7 +56,6 @@ public class ReqresInTests {
         given()
                 .filter(withCustomTemplates())
                 .spec(request)
-                .contentType(JSON)
                 .body(gson.toJson(jsonPayload))
                 .when()
                 .post("/users")
