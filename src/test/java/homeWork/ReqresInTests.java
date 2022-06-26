@@ -3,8 +3,8 @@ package homeWork;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import models.Credentials;
-import models.GenerateLoginResponse;
 import models.LoginResponse;
+import models.LoginResponseWithLombok;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -29,30 +29,6 @@ public class ReqresInTests {
                 .email("eve.holt@reqres.in")
                 .build();
 
-        GenerateLoginResponse loginResponse =
-                given()
-                        .filter(withCustomTemplates())
-                        .spec(request)
-                        .contentType(JSON)
-                        .body(data)
-                        .when()
-                        .post("/login")
-                        .then()
-                        .spec(responseSpec200)
-                        .body(matchesJsonSchemaInClasspath("schemas/LoginResponse.json"))
-                        .extract().as(GenerateLoginResponse.class);
-
-        assertThat(loginResponse.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
-    }
-
-    @Disabled
-    @Test
-    void loginTestThatFailed() {
-        Credentials data = Credentials.builder()
-                .password("cityslicka")
-                .email("eve.holt@reqres.in")
-                .build();
-
         LoginResponse loginResponse =
                 given()
                         .filter(withCustomTemplates())
@@ -65,6 +41,30 @@ public class ReqresInTests {
                         .spec(responseSpec200)
                         .body(matchesJsonSchemaInClasspath("schemas/LoginResponse.json"))
                         .extract().as(LoginResponse.class);
+
+        assertThat(loginResponse.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+    }
+
+    @Disabled
+    @Test
+    void loginTestThatFailed() {
+        Credentials data = Credentials.builder()
+                .password("cityslicka")
+                .email("eve.holt@reqres.in")
+                .build();
+
+        LoginResponseWithLombok loginResponse =
+                given()
+                        .filter(withCustomTemplates())
+                        .spec(request)
+                        .contentType(JSON)
+                        .body(data)
+                        .when()
+                        .post("/login")
+                        .then()
+                        .spec(responseSpec200)
+                        .body(matchesJsonSchemaInClasspath("schemas/LoginResponse.json"))
+                        .extract().as(LoginResponseWithLombok.class);
 
         assertThat(loginResponse.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
     }
