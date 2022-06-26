@@ -3,7 +3,9 @@ package homeWork;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import models.Credentials;
+import models.GenerateLoginResponse;
 import models.LoginResponse;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
@@ -27,21 +29,44 @@ public class ReqresInTests {
                 .email("eve.holt@reqres.in")
                 .build();
 
-        LoginResponse loginResponse =
+        GenerateLoginResponse loginResponse =
                 given()
                         .filter(withCustomTemplates())
                         .spec(request)
+                        .contentType(JSON)
                         .body(data)
                         .when()
                         .post("/login")
                         .then()
                         .spec(responseSpec200)
-//                .body("token", is("QpwL5tke4Pnpja7X4"));
+                        .body(matchesJsonSchemaInClasspath("schemas/LoginResponse.json"))
+                        .extract().as(GenerateLoginResponse.class);
+
+        assertThat(loginResponse.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+    }
+
+    @Disabled
+    @Test
+    void loginTestThatFailed() {
+        Credentials data = Credentials.builder()
+                .password("cityslicka")
+                .email("eve.holt@reqres.in")
+                .build();
+
+        LoginResponse loginResponse =
+                given()
+                        .filter(withCustomTemplates())
+                        .spec(request)
+                        .contentType(JSON)
+                        .body(data)
+                        .when()
+                        .post("/login")
+                        .then()
+                        .spec(responseSpec200)
                         .body(matchesJsonSchemaInClasspath("schemas/LoginResponse.json"))
                         .extract().as(LoginResponse.class);
 
         assertThat(loginResponse.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
-
     }
 
     @Test
@@ -60,6 +85,7 @@ public class ReqresInTests {
                 .when()
                 .post("/users")
                 .then()
+                .log().body()
                 .spec(responseSpec201)
                 .body("name", is("morpheus"));
     }
