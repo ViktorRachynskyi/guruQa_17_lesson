@@ -45,9 +45,8 @@ public class ReqresInTests {
         assertThat(loginResponse.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
     }
 
-    @Disabled
     @Test
-    void loginTestThatFailed() {
+    void loginTestUseLombok() {
         Credentials data = Credentials.builder()
                 .password("cityslicka")
                 .email("eve.holt@reqres.in")
