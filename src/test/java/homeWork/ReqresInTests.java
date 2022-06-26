@@ -2,8 +2,13 @@ package homeWork;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import static listeners.CustomAllureListener.withCustomTemplates;
 import static spec.Spec.*;
 
 import java.util.HashMap;
@@ -22,6 +27,7 @@ public class ReqresInTests {
         String contentType = "application/json";
 
         given()
+                .filter(withCustomTemplates())
                 .spec(request)
                 .body(authorizeData)
                 .contentType(contentType)
@@ -41,6 +47,7 @@ public class ReqresInTests {
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
         given()
+                .filter(withCustomTemplates())
                 .spec(request)
                 .contentType(JSON)
                 .body(gson.toJson(jsonPayload))
@@ -61,6 +68,7 @@ public class ReqresInTests {
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
         given()
+                .filter(withCustomTemplates())
                 .spec(request)
                 .contentType(JSON)
                 .body(gson.toJson(jsonPayload))
@@ -76,6 +84,7 @@ public class ReqresInTests {
     void deleteUserTest() {
 
         given()
+                .filter(withCustomTemplates())
                 .spec(request)
                 .when()
                 .delete("/users/2")
@@ -87,6 +96,7 @@ public class ReqresInTests {
     void resourceNotFoundTest() {
 
         given()
+                .filter(withCustomTemplates())
                 .spec(request)
                 .when()
                 .get("/unknown/23")
