@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static listeners.CustomAllureListener.withCustomTemplates;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static spec.Spec.*;
 
 import java.util.HashMap;
@@ -121,6 +122,20 @@ public class ReqresInTests {
                 .delete("/users/2")
                 .then()
                 .spec(responseSpec204);
+    }
+
+    @Test
+    void getUsersListTest() {
+
+        given()
+                .filter(withCustomTemplates())
+                .spec(request)
+                .when()
+                .get("/users?page=2")
+                .then()
+                .log().body()
+                .spec(responseSpec200)
+                .body("data.findAll{it.email =~/.*?@reqres.in/}.email.flatten()", hasItem("michael.lawson@reqres.in"));
     }
 
     @Test
