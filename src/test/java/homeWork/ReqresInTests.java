@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import models.Credentials;
 import models.LoginResponse;
 import models.LoginResponseWithLombok;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
